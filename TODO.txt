@@ -1,0 +1,14 @@
+[done]
+- tls: wreq + chrome 147 + cookie jar
+- extractor: 403 -> dd object parse -> /captcha/?initialCid -> challenge GET -> bundler slice
+
+[todo tomorrow]
+- e2e: shutterstock fetch+deob+vm 30ms*, all 3 types (tags/interstitial/slider), solver fully reversed
+- remove ai slop comments
+- finish remaining opcodes (~7 captcha, ~11-17 interstitial)
+- gen: payload encoder (port encryption.js, ~150 LOC: xorshift prng + utf8-xor + custom b64)
+- mouse: trajectory synth -> bean.js stats (cardinal sums, speeds, straightness, curvature, dtw vs bezier)
+- canvas: picasso 7 draws + murmur3 hash
+- vm: run bytecode -> {i,u,r}
+- solver: target endpoint + cookie set + retry
+- scale: parallel runner + success rate

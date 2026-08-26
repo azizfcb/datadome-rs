@@ -1,0 +1,23 @@
+[workspace]
+members = ["dd-deob", "dd-fetch"]
+resolver = "2"
+
+[workspace.dependencies]
+wreq = { version = "6.0.0-rc.28", features = [
+    "charset", "cookies", "gzip", "brotli", "zstd", "deflate",
+    "query", "form", "json", "stream", "hickory-dns", "webpki-roots",
+] }
+wreq-util = { version = "3.0.0-rc.10", features = [
+    "emulation", "emulation-serde",
+] }
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
+incremental = false
+debug = false
+debug-assertions = false
+overflow-checks = false
