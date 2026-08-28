@@ -1,0 +1,15 @@
+[package]
+name = "solver"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+oxc_allocator = "0.147.0"
+oxc_ast = "0.147.0"
+oxc_ast_visit = "0.147.0"
+oxc_parser = "0.147.0"
+oxc_span = "0.147.0"
+oxc_syntax = "0.147.0"
+deob = { path = "../deob" }
+vm = { path = "../vm" }
+wasm = { path = "../wasm" }

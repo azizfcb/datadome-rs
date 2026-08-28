@@ -1,0 +1,15 @@
+0@1048576:  index out of bounds: the len is 
+0@1048611:  but the index is 
+0@1048631: /rustc/88d9e12ae178fab0fb5cc050a94da85685d449ea/library/std/src/sys/sync/rwlock/no_threads.rs
+0@1048725: /home/runner/work/interstitial-js-challenge/interstitial-js-challenge/node_modules/@datadome/detection-wasm/target/wasm32-unknown-unknown/release/build/challenges-446fcfa2d37255a0/out/math-dynamic-signal.gen.rs
+0@1048936: /rustc/88d9e12ae178fab0fb5cc050a94da85685d449ea/library/alloc/src/raw_vec/mod.rs
+0@1049017: /rust/deps/dlmalloc-0.2.13/src/dlmalloc.rs
+0@1049060: /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/once_cell-1.20.2/src/lib.rs
+0@1049154: capacity overflow
+0@1049256: 00010203040506070809101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899closure invoked recursively or after being dropped
+0@1049620: assertion failed: psize >= size + min_overhead
+0@1049684: assertion failed: psize <= size + max_overhead
+0@1049748: rwlock overflowed read locks7
+0@1049824: rwlock has not been locked for reading
+0@1049880: reentrant init
+0@1049912: Lazy instance has previously been poisoned
