@@ -23,27 +23,43 @@ fn main() {
             eprintln!("no image at {target}");
             return;
         };
-        match image::decode(&body) {
-            Some(picture) => {
-                eprintln!("image {}x{}", picture.width, picture.height);
-                let mut out = format!("P3\n{} {}\n255\n", picture.width, picture.height);
-                for y in 0..picture.height {
-                    for x in 0..picture.width {
-                        let (r, g, b) = picture.at(x, y);
-                        out.push_str(&format!("{r} {g} {b} "));
-                    }
-                    out.push('\n');
-                }
-                std::fs::write("run/c/puzzle.ppm", out).ok();
-                let energy = image::profile(&picture);
-                let mut ranked: Vec<(usize, f64)> =
-                    energy.iter().copied().enumerate().collect();
-                ranked.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
-                eprintln!("top columns {:?}", &ranked[..12.min(ranked.len())]);
-                eprintln!("notch {:?}", image::notch(&picture, 55));
+        let rounds: usize = std::env::var("DD_ROUNDS")
+            .ok()
+            .and_then(|value| value.parse().ok())
+            .unwrap_or(2000);
+        let Some(picture) = image::decode(&body) else {
+            eprintln!("decode failed");
+            return;
+        };
+        let seal = picture
+            .plane
+            .iter()
+            .fold(2166136261u32, |sum, byte| (sum ^ u32::from(*byte)).wrapping_mul(16777619));
+        eprintln!("image {}x{} {} bytes plane {seal:08x}", picture.width, picture.height, body.len());
+        eprintln!("notch {:?}", image::locate(&picture));
+        let mut taken = Vec::with_capacity(rounds);
+        for round in 0..rounds + rounds / 10 {
+            let start = std::time::Instant::now();
+            let found = image::decode(&body);
+            let spent = start.elapsed();
+            std::hint::black_box(&found);
+            if round >= rounds / 10 {
+                taken.push(spent.as_nanos() as u64);
             }
-            None => eprintln!("decode failed"),
         }
+        report("decode", &mut taken);
+
+        taken.clear();
+        for round in 0..rounds + rounds / 10 {
+            let start = std::time::Instant::now();
+            let found = image::locate(&picture);
+            let spent = start.elapsed();
+            std::hint::black_box(&found);
+            if round >= rounds / 10 {
+                taken.push(spent.as_nanos() as u64);
+            }
+        }
+        report("detect", &mut taken);
         return;
     }
 
@@ -65,6 +81,20 @@ fn main() {
     for hand in crew {
         hand.join().ok();
     }
+}
+
+fn report(name: &str, taken: &mut Vec<u64>) {
+    taken.sort_unstable();
+    let pick = |share: f64| taken[((taken.len() - 1) as f64 * share) as usize] as f64 / 1000.0;
+    eprintln!(
+        "{name} n={} min {:.1} p50 {:.1} p90 {:.1} p99 {:.1} max {:.1} us",
+        taken.len(),
+        taken[0] as f64 / 1000.0,
+        pick(0.50),
+        pick(0.90),
+        pick(0.99),
+        taken[taken.len() - 1] as f64 / 1000.0
+    );
 }
 
 fn solve(profile: &'static profile::Profile, kind: &str, target: &str) {

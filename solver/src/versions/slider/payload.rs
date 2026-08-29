@@ -271,10 +271,20 @@ fn puzzle(profile: &Profile, challenge: &Challenge) -> Option<f64> {
     if path.is_empty() {
         return None;
     }
+    let arrived = std::time::Instant::now();
     let reply = fetch::script(profile, &path, "https://geo.captcha-delivery.com/").ok()?;
+    let available = arrived.elapsed();
+    let started = std::time::Instant::now();
     let picture = crate::image::decode(&reply.body)?;
-    let (left, span) = crate::image::notch(&picture, 55)?;
-    eprintln!("notch at {left} span {span}");
+    let decoded = started.elapsed();
+    let (left, _) = crate::image::locate(&picture)?;
+    let found = started.elapsed();
+    eprintln!(
+        "notch at {left}; available {} us decode {} us detect {} us",
+        available.as_micros(),
+        decoded.as_micros(),
+        (found - decoded).as_micros()
+    );
     Some(left as f64 - challenge.measure("offset", 5.0))
 }
 
